@@ -3,7 +3,7 @@ package com.training.sanity.tests;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.Test;
 import org.testng.annotations.BeforeMethod;
-import org.testng.AssertJUnit;
+import org.testng.Assert;
 import static org.testng.Assert.assertEquals;
 
 import java.awt.List;
@@ -25,15 +25,21 @@ import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
 import com.training.generics.ScreenShot;
+import com.training.pom.CourseCatalogPOM;
 import com.training.pom.LoginPOM;
 import com.training.utility.DriverFactory;
 import com.training.utility.DriverNames;
 
-public class LoginTests {
+
+/*
+ TestCase Objective:To verify whether application allows student to get register for a course
+ */
+public class CourseCatalogTests {
 
 	private WebDriver driver;
 	private String baseUrl;
 	private LoginPOM loginPOM;
+	private CourseCatalogPOM courseCatalogPOM;
 	private static Properties properties;
 	private ScreenShot screenShot;
 
@@ -44,10 +50,11 @@ public class LoginTests {
 		properties.load(inStream);
 	}
 
-	@BeforeTest
+	@BeforeMethod
 	public void setUp() throws Exception {
 		driver = DriverFactory.getDriver(DriverNames.CHROME);
 		loginPOM = new LoginPOM(driver); 
+		courseCatalogPOM = new CourseCatalogPOM(driver); 
 		baseUrl = properties.getProperty("baseURL");
 		screenShot = new ScreenShot(driver); 
 		// open the browser 
@@ -55,17 +62,33 @@ public class LoginTests {
 	}
 	
 	
-	@AfterTest
+	@AfterMethod
 	public void tearDown() throws Exception {
 		Thread.sleep(1000);
 		driver.quit();
 	}
-	@Test
-	public void validLoginTest() {
-		loginPOM.sendUserName("test13");
-		loginPOM.sendPassword("test");
-		loginPOM.clickLoginBtn(); 
-		screenShot.captureScreenShot("Login");
-	}
 
+	@Test
+	public void CourseCatalogTest()  {
+		
+		//login to application
+		 loginPOM.sendUserName("test14"); 
+		  loginPOM.sendPassword("test"); 
+		  loginPOM.clickLoginBtn();
+		  
+		  //click on 'Course catalog' button
+		  courseCatalogPOM.clickCourseCatalog();
+		  //search for a course(passed as an argument)
+		courseCatalogPOM.sendSearchname("123testing");
+		
+		//Click to Subscribe the course
+		courseCatalogPOM.clickSubscribe();
+		String actual= driver.findElement(By.xpath("//div[@class=\"alert alert-info\"]")).getText();
+		String expected="User test test (test14) has been registered to course 123testing";
+		Assert.assertEquals(actual, expected);
+		screenShot.captureScreenShot("Course catalog");
+	
+	}
+	
+	
 }

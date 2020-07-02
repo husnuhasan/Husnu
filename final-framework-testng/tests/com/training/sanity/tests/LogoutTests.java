@@ -1,9 +1,9 @@
 package com.training.sanity.tests;
 
+import org.testng.Assert;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.Test;
 import org.testng.annotations.BeforeMethod;
-import org.testng.AssertJUnit;
 import static org.testng.Assert.assertEquals;
 
 import java.awt.List;
@@ -26,14 +26,18 @@ import org.testng.annotations.Test;
 
 import com.training.generics.ScreenShot;
 import com.training.pom.LoginPOM;
+import com.training.pom.LogoutPOM;
 import com.training.utility.DriverFactory;
 import com.training.utility.DriverNames;
-
-public class LoginTests {
+/*
+ TestCase Objective:To verify whether application allows student to get log out from the application
+ */
+public class LogoutTests {
 
 	private WebDriver driver;
 	private String baseUrl;
 	private LoginPOM loginPOM;
+	private LogoutPOM logoutPOM;
 	private static Properties properties;
 	private ScreenShot screenShot;
 
@@ -48,6 +52,7 @@ public class LoginTests {
 	public void setUp() throws Exception {
 		driver = DriverFactory.getDriver(DriverNames.CHROME);
 		loginPOM = new LoginPOM(driver); 
+		logoutPOM = new LogoutPOM(driver); 
 		baseUrl = properties.getProperty("baseURL");
 		screenShot = new ScreenShot(driver); 
 		// open the browser 
@@ -61,11 +66,22 @@ public class LoginTests {
 		driver.quit();
 	}
 	@Test
-	public void validLoginTest() {
-		loginPOM.sendUserName("test13");
-		loginPOM.sendPassword("test");
-		loginPOM.clickLoginBtn(); 
-		screenShot.captureScreenShot("Login");
+	public void ClickLogoutTest()  {
+		//login to application
+		  loginPOM.sendUserName("123"); 
+		  loginPOM.sendPassword("123"); 
+		  loginPOM.clickLoginBtn();
+		  String actual1=driver.findElement(By.xpath("//p[contains(text(),'Hello')]")).getText();		  
+		  String expected1="Hello 123 123 and welcome,";
+		  Assert.assertEquals(actual1, expected1);		 
+		logoutPOM.clickToggle();
+		
+		////logout from the application
+		logoutPOM.clickLogout();		
+		String actual= driver.getCurrentUrl();
+		String expected="http://elearningm1.upskills.in/index.php";
+		Assert.assertEquals(actual, expected);
+		screenShot.captureScreenShot("logout");
+		
 	}
-
 }

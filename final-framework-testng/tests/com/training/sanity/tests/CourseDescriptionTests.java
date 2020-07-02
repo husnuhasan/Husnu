@@ -1,9 +1,9 @@
 package com.training.sanity.tests;
 
+import org.testng.Assert;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.Test;
 import org.testng.annotations.BeforeMethod;
-import org.testng.AssertJUnit;
 import static org.testng.Assert.assertEquals;
 
 import java.awt.List;
@@ -25,15 +25,19 @@ import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
 import com.training.generics.ScreenShot;
+import com.training.pom.CourseDescriptionPOM;
 import com.training.pom.LoginPOM;
 import com.training.utility.DriverFactory;
 import com.training.utility.DriverNames;
-
-public class LoginTests {
+/*
+TestCase Objective:To verify whether application displays course details registered by the student
+*/
+public class CourseDescriptionTests {
 
 	private WebDriver driver;
 	private String baseUrl;
 	private LoginPOM loginPOM;
+	private CourseDescriptionPOM coursedescriptionPOM;
 	private static Properties properties;
 	private ScreenShot screenShot;
 
@@ -48,6 +52,7 @@ public class LoginTests {
 	public void setUp() throws Exception {
 		driver = DriverFactory.getDriver(DriverNames.CHROME);
 		loginPOM = new LoginPOM(driver); 
+		coursedescriptionPOM = new CourseDescriptionPOM(driver); 
 		baseUrl = properties.getProperty("baseURL");
 		screenShot = new ScreenShot(driver); 
 		// open the browser 
@@ -60,12 +65,27 @@ public class LoginTests {
 		Thread.sleep(1000);
 		driver.quit();
 	}
+	
 	@Test
-	public void validLoginTest() {
+	public void MyCourseTest()  {
+		
+		//login to application
 		loginPOM.sendUserName("test13");
 		loginPOM.sendPassword("test");
 		loginPOM.clickLoginBtn(); 
-		screenShot.captureScreenShot("Login");
+		//Go to 'My Course' tab
+		coursedescriptionPOM.clickMyCourse();
+		//Click on Subscribed course
+		coursedescriptionPOM.clickCourse();
+		
+		//Click on course description
+		coursedescriptionPOM.clickCourseDesc();
+		String actual= driver.findElement(By.xpath("//div[@class='panel-heading']")).getText();
+		String expected="Course description of 123testing below.";
+		Assert.assertEquals(actual, expected);
+		screenShot.captureScreenShot("Course decription");
+			
 	}
-
+	
+	
 }
