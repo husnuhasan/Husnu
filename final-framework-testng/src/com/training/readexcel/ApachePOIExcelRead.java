@@ -6,6 +6,7 @@ import java.util.Iterator;
 
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.util.NumberToTextConverter;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
@@ -63,7 +64,8 @@ public class ApachePOIExcelRead {
 					case Cell.CELL_TYPE_NUMERIC:
 						
 						if(((Double) cell.getNumericCellValue()).toString()!=null){
-							tempList1[cellCount] = ((Double) cell.getNumericCellValue()).toString(); 
+							tempList1[cellCount] = NumberToTextConverter.toText((Double) cell.getNumericCellValue()); 
+						//	NumberToTextConverter.toText((Double) cell.getNumericCellValue());((Double) cell.getNumericCellValue()).toString()
 						} 
 						break;
 					case Cell.CELL_TYPE_STRING:
@@ -71,6 +73,9 @@ public class ApachePOIExcelRead {
 							tempList1[cellCount] =cell.getStringCellValue();
 						}
 						break;
+						
+					
+						
 					}
 					cellCount ++; 
 				}
@@ -89,7 +94,7 @@ public class ApachePOIExcelRead {
 	}
 
 	public static void main(String[] args) {
-		String fileName = "C:/Users/Naveen/Desktop/Testing.xlsx";
+		String fileName = "C:/Users/HusnuSoudhaHasanAbdu/Documents/Automation training/TestData/Elearning-User creation Data.xlsx";
 		
 		for(String [] temp : new ApachePOIExcelRead().getExcelContent(fileName)){
 			for(String  tt : temp){

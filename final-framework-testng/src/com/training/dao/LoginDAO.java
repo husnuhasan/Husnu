@@ -1,3 +1,4 @@
+
 package com.training.dao;
 
 import java.io.FileInputStream;
@@ -8,16 +9,15 @@ import java.util.List;
 import java.util.Properties;
 
 import com.training.bean.LoginBean;
-import com.training.bean.UserdetailsBean;
 import com.training.connection.GetConnection;
 import com.training.utility.LoadDBDetails;
 
 // Data Access Object 
-public class ELearningDAO {
+public class LoginDAO {
 	
 	Properties properties; 
 	
-	public ELearningDAO() {
+	public LoginDAO() {
 		 try {
 			properties = new Properties();
 			FileInputStream inStream = new FileInputStream("./resources/sql.properties");
@@ -28,27 +28,22 @@ public class ELearningDAO {
 		}
 	}
 	
-	public List <UserdetailsBean> getUserdetails(){
-		String sql = properties.getProperty("get.userdetails"); 
+	public List<LoginBean> getLogins(){
+		String sql = properties.getProperty("get.logins"); 
 		
 		GetConnection gc  = new GetConnection(); 
-		List<UserdetailsBean> list = null;
+		List<LoginBean> list = null;
 		try {
 			gc.ps1 = GetConnection.getMySqlConnection(LoadDBDetails.getDBDetails()).prepareStatement(sql); 
-			list = new ArrayList<UserdetailsBean>(); 
+			list = new ArrayList<LoginBean>(); 
 			
 			gc.rs1 = gc.ps1.executeQuery(); 
 			
 			while(gc.rs1.next()) {
 			
-				UserdetailsBean temp = new UserdetailsBean(); 
-				temp.setFirstName(gc.rs1.getString(1));
-				temp.setLastName(gc.rs1.getString(2));
-				temp.setEmail(gc.rs1.getString(3));
-				temp.setPhone(gc.rs1.getString(4));
-				temp.setLogin(gc.rs1.getString(5));
-				temp.setPassword(gc.rs1.getString(6));
-				temp.setProfile(gc.rs1.getString(7));
+				LoginBean temp = new LoginBean(); 
+				temp.setUserName(gc.rs1.getString(1));
+				temp.setPassword(gc.rs1.getString(2));
 
 				list.add(temp); 
 				
@@ -61,7 +56,7 @@ public class ELearningDAO {
 	}
 	
 	public static void main(String[] args) {
-		new ELearningDAO().getUserdetails().forEach(System.out :: println);
+		new LoginDAO().getLogins().forEach(System.out :: println);
 	}
 	
 	
